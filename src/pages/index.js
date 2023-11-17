@@ -31,12 +31,11 @@ export default function Home() {
   const [data,setData] = useState()
 
   useEffect( ()=> {
-    fetch("https://newsapi.org/v2/top-headlines?country=us&apiKey=7a1e2a4bb7d641a49383eca2dfc126ae")
+    fetch("http://api.mediastack.com/v1/news?access_key=1c931c818cf2985b7540b640d34f68ec&limit=50&countries=us&sources=cnn,bbc")
       .then((res) => res.json())
       .then((responseJson) => {
-        setData(responseJson.articles)
+        setData(responseJson.data)
       })
-    console.log(data)
   },[])
 
   return (
@@ -51,18 +50,18 @@ export default function Home() {
         <div className="container-md text-lg my-5">
           <h1>Berita Terbaru</h1>
           {!data ? "Loading" : 
-          data.map((article) => {
-            return <div className="card my-3">
-              <div class="row g-0">
-              <div class="col-md-4">
-                <img src={article.urlToImage} class="img-fluid rounded-start" alt={article.description}/>
+          data.filter(e=>e.image).map((article,i) => {
+            return <div className="card my-3" key={i}>
+              <div className="row g-0">
+              <div className="col-md-4">
+                <img src={article.image} className="img-fluid rounded-start" alt={article.title}/>
               </div>
-              <div class="col-md-8">
-                <div class="card-body">
-                  <h5 class="card-title">{article.title}</h5>
-                  <p class="card-text">{article.content}</p>
-                  <p class="card-text"><small class="text-body-secondary">Published {getRelativeTime(new Date(article.publishedAt))}</small></p>
-                  <a href={article.url}>View in {article.source.name}</a>
+              <div className="col-md-8">
+                <div className="card-body">
+                  <h5 className="card-title">{article.title}</h5>
+                  <p className="card-text">{article.description}</p>
+                  <p className="card-text"><small className="text-body-secondary">Published {getRelativeTime(new Date(article.published_at))}</small></p>
+                  <a href={article.url}>View in {article.source}</a>
                 </div>
               </div>
             </div>
